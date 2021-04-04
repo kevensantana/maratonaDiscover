@@ -38,7 +38,7 @@
         <a href="/profile" id="avatar-profile">
           <p>Keven Santana<span>Ver perfil</span></p>
           <img
-            src="https://avatars.githubusercontent.com/u/44447313?v=4" />
+            src="https://avatars.githubusercontent.com/u/44447313?v=4"/>
         </a>
       </section>
 
@@ -84,7 +84,12 @@
             </div>
             <div class="deadline column">
               <span>Prazo</span>
+              <% if(job.status === 'progress' ){ %> 
               <p><%= job.remaining %>  dias para a entrega</p>
+              
+              <% }else{ %> 
+                <p>Prazo encerrado</p>
+              <% } %> 
             </div>
             <div class="amount column">
               <span>Valor</span>
