@@ -8,7 +8,7 @@ const Profile = {
       name: "keven Santana",
       avatar: "https://avatars.githubusercontent.com/u/44447313?v=4",
       "monthly-budget": 3000,
-      "hours-per-day": 5,
+      "hours-per-day": 8,
       "days-per-week": 5,
       "vacation-per-year": 4,
       "value-hour": 75
@@ -19,14 +19,36 @@ const Profile = {
          return res.render(views + "profile", { profile: Profile.data })
       },
 
-      update(){
-         //req.body para pegar os dados
-         
+      update(req, res){
+       //req.body para pegar os dados
+       const data = req.body;
 
+       //definir quantas semanas tem um ano
+       const weeksParYear = 52
+
+       //remover as semanas de ferias do ano
+       const weeksParMonth = (weeksParYear - data["vacation-per-year"] ) / 12
+
+       //quantas horas por semana estou trabalhando 
+       const weekTotalHours = data["hours-per-day"] * data["days-per-week"]
+
+       //horas trabalhadas no mes
+       const monthTotalHours = weekTotalHours * weeksParMonth
+
+       //valor por hora
+       const valueHour = data["value-hour"] = data["monthly-budget"] / monthTotalHours
+      
+       //atribuição
+       Profile.data = {
+          ...Profile.data,
+          ...req.body,
+          "value-hour": valueHour
+       }
+
+       return res.redirect('/profile')
       }
    },
 }
-
 
 const Job = {
 
@@ -83,6 +105,10 @@ const Job = {
 
          return res.redirect('/')
       },
+
+      show(req, res){
+         return res.render(views + "job-edit", {job})
+      }
    },
 
    services:{
@@ -110,9 +136,8 @@ const Job = {
 //GET
 routes.get('/', Job.controllers.index)
 routes.get('/job', Job.controllers.create)
-routes.get('/job-edit', (req, res) => res.render(views + "job-edit"))
+routes.get('/job-edit', Job.controllers.show)
 routes.get('/profile', Profile.controllers.index)
-
 
 //POST  
 routes.post('/job', Job.controllers.save)
